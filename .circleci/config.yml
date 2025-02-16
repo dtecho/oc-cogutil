@@ -512,4 +512,49 @@ jobs:
       - run:
           name: Start storing ccache
           command: date +%d-%m-%Y > /tmp/date
-      - save_cache:
+      - save_cache: save_cache:
+          key: ccache-{{ checksum "/tmp/date" }}
+          paths:
+            - /ws/ccache
+
+workflows:
+  version: 2
+  build-test-package:
+    jobs:
+      - cogutil
+      - atomspace:
+          requires:
+            - cogutil
+      - cogserver:
+          requires:
+            - atomspace
+      - attention:
+          requires:
+            - cogserver
+      - unify:
+          requires:
+            - atomspace
+      - ure:
+          requires:
+            - atomspace
+            - unify
+      - miner:
+          requires:
+            - ure
+      - asmoses:
+          requires:
+            - cogutil
+            - atomspace
+            - ure
+      - opencog:
+          requires:
+            - atomspace
+            - ure
+            - cogserver
+            - attention
+      - package:
+          requires:
+            - opencog
+          filters:
+            branches:
+              only: master
