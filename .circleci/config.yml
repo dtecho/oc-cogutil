@@ -512,7 +512,7 @@ jobs:
       - run:
           name: Start storing ccache
           command: date +%d-%m-%Y > /tmp/date
-      - save_cache: save_cache:
+      - save_cache:
           key: ccache-{{ checksum "/tmp/date" }}
           paths:
             - /ws/ccache
